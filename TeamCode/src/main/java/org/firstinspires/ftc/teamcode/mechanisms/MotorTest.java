@@ -1,28 +1,38 @@
 package org.firstinspires.ftc.teamcode.mechanisms;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class MotorTest {
-    private DcMotor motorR;
-    private DcMotor motorL;
-    private DcMotor motorBR;
-    private DcMotor motorBL;
+    private DcMotor frontRightMotor, backRightMotor, frontLeftMotor, backLeftMotor;
     public void init(HardwareMap hwMap) {
-        motorR = hwMap.get(DcMotor.class, "motorR");
-        motorR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorL = hwMap.get(DcMotor.class, "motorL");
-        motorL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorBR = hwMap.get(DcMotor.class, "motorBR");
-        motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorBL = hwMap.get(DcMotor.class, "motorBL");
-        motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRightMotor = hwMap.get(DcMotor.class, "motorR");
+        frontRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeftMotor = hwMap.get(DcMotor.class, "motorL");
+        frontLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRightMotor = hwMap.get(DcMotor.class, "motorBR");
+        backRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeftMotor = hwMap.get(DcMotor.class, "motorBL");
+        backLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        frontRightMotor.setDirection(DcMotor.Direction.REVERSE);
+        frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
+        backRightMotor.setDirection(DcMotor.Direction.REVERSE);
+        backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
     }
-    public void setMotorSpeedCruise(double speedCruise) {
-        motorR.setPower(speedCruise *= -1);
-        motorL.setPower(speedCruise);
-        motorBR.setPower(speedCruise *= -1);
-        motorBL.setPower(speedCruise);
+
+    public void drive(double throttle, double spin) {
+        double leftPower = throttle + spin;
+        double rightPower = throttle - spin;
+        double largest = Math.max(Math.abs(leftPower), Math.abs(rightPower));
+        if (largest > 1.0) {
+            leftPower /= largest;
+            rightPower /= largest;
+        }
+
+        frontRightMotor.setPower(rightPower);
+        frontLeftMotor.setPower(leftPower);
+        backRightMotor.setPower(rightPower);
+        backLeftMotor.setPower(leftPower);
     }
 }

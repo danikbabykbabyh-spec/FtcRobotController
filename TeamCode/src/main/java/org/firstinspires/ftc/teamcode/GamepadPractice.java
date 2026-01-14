@@ -8,15 +8,19 @@ import org.firstinspires.ftc.teamcode.mechanisms.MotorTest;
 @TeleOp
 public class GamepadPractice extends OpMode {
 
-    MotorTest bench = new MotorTest();
+    MotorTest drive = new MotorTest();
+    double throttle, spin;
 
     @Override
     public void init() {
-        bench.init(hardwareMap);
+        drive.init(hardwareMap);
     }
 
     @Override
     public void loop() {
-        bench.setMotorSpeedCruise(gamepad1.left_stick_y / 2);
+        throttle = -gamepad1.left_stick_x;
+        spin = -gamepad1.left_stick_y;
+
+        drive.drive(throttle, spin);
     }
 }
