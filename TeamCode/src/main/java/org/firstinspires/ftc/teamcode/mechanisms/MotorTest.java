@@ -35,4 +35,19 @@ public class MotorTest {
         backRightMotor.setPower(rightPower);
         backLeftMotor.setPower(leftPower);
     }
+
+    public void sideDrive(double speed) {
+        if (speed > 0) {
+            frontRightMotor.setPower(-speed);
+            backRightMotor.setPower(speed);
+            frontLeftMotor.setPower(-speed);
+            backLeftMotor.setPower(speed);
+        }
+        else if (speed < 0) {
+            frontLeftMotor.setPower(-speed);
+            backLeftMotor.setPower(speed);
+            frontRightMotor.setPower(-speed);
+            backRightMotor.setPower(speed);
+        }
+    }
 }
