@@ -18,7 +18,7 @@ public class GamepadPractice extends OpMode {
 
     @Override
     public void loop() {
-        throttle = -gamepad1.left_stick_x;
+        throttle = -gamepad1.right_stick_x;
         spin = -gamepad1.left_stick_y;
         speed = gamepad1.right_trigger;
         speed1 = -gamepad1.left_trigger;
