@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class MotorTest {
-    private DcMotor frontRightMotor, backRightMotor, frontLeftMotor, backLeftMotor;
+    private DcMotor frontRightMotor, backRightMotor, frontLeftMotor, backLeftMotor, shootMotor, intakeMotor, shootMotor2;
     public void init(HardwareMap hwMap) {
         frontRightMotor = hwMap.get(DcMotor.class, "motorR");
         frontRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -14,6 +14,12 @@ public class MotorTest {
         backRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backLeftMotor = hwMap.get(DcMotor.class, "motorBL");
         backLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        shootMotor = hwMap.get(DcMotor.class, "motorShoot");
+        shootMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        intakeMotor = hwMap.get(DcMotor.class, "motorIntake");
+        intakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        shootMotor2 = hwMap.get(DcMotor.class, "motorShoot2");
+        shootMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         frontRightMotor.setDirection(DcMotor.Direction.REVERSE);
         frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
@@ -45,5 +51,14 @@ public class MotorTest {
             frontLeftMotor.setPower(-speed);
             backLeftMotor.setPower(speed);
         }
+    }
+
+    public void shoot(double speed) {
+        shootMotor.setPower(speed);
+        shootMotor2.setPower(speed);
+    }
+
+    public void intake(double speed) {
+        intakeMotor.setPower(speed);
     }
 }
