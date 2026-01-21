@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.mechanisms;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-public class MotorTest {
+public class MechanismMotor {
     private DcMotor frontRightMotor, backRightMotor, frontLeftMotor, backLeftMotor, shootMotor, intakeMotor, shootMotor2;
     public void init(HardwareMap hwMap) {
         frontRightMotor = hwMap.get(DcMotor.class, "motorR");
@@ -45,17 +45,21 @@ public class MotorTest {
     public void sideDrive(double speed) {
         if (speed > 0) {
             frontRightMotor.setPower(-speed);
-            backRightMotor.setPower(speed);
+            backRightMotor.setPower(-speed);
+            frontLeftMotor.setPower(speed);
+            backLeftMotor.setPower(speed);
         }
         else if (speed < 0) {
             frontLeftMotor.setPower(-speed);
-            backLeftMotor.setPower(speed);
+            backLeftMotor.setPower(-speed);
+            frontRightMotor.setPower(speed);
+            backRightMotor.setPower(speed);
         }
     }
 
     public void shoot(double speed) {
         shootMotor.setPower(speed);
-        shootMotor2.setPower(speed);
+        shootMotor2.setPower(-speed);
     }
 
     public void intake(double speed) {

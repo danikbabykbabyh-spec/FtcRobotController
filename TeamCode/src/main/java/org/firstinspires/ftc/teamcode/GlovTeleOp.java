@@ -3,14 +3,14 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.mechanisms.MotorTest;
-import org.firstinspires.ftc.teamcode.mechanisms.ServoTest;
+import org.firstinspires.ftc.teamcode.mechanisms.MechanismMotor;
+import org.firstinspires.ftc.teamcode.mechanisms.MechanismServo;
 
 @TeleOp
-public class GamepadPractice extends OpMode {
+public class GlovTeleOp extends OpMode {
 
-    MotorTest drive = new MotorTest();
-    ServoTest servo = new ServoTest();
+    MechanismMotor drive = new MechanismMotor();
+    MechanismServo servo = new MechanismServo();
 
     double throttle, spin, speed, speed1, angle, shootSpeed;
 
@@ -18,6 +18,7 @@ public class GamepadPractice extends OpMode {
     public void init()
     {
         drive.init(hardwareMap);
+        servo.init(hardwareMap);
         telemetry.addData("Status", "Initialized");
     }
 
@@ -28,11 +29,20 @@ public class GamepadPractice extends OpMode {
         speed = gamepad1.right_trigger;
         speed1 = -gamepad1.left_trigger;
         angle = gamepad2.left_stick_x;
-        shootSpeed = gamepad2.right_trigger;
+        shootSpeed = gamepad2.right_stick_y;
 
         drive.drive(throttle, spin);
         drive.shoot(shootSpeed);
         drive.intake(1);
-        servo.setServoPos(angle);
+        if (speed > 0) {
+            drive.sideDrive(speed);
+        }
+        else if (speed1 < 0) {
+            drive.sideDrive(speed1);
+        }
+        servo.setServoPos(gamepad2.right_trigger);
+        if (gamepad2.right_trigger == 0) {
+            servo.setServoPos(0);
+        }
     }
 }
