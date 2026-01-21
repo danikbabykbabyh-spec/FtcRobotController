@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.ServoTest;
 public class GamepadPractice extends OpMode {
 
     MotorTest drive = new MotorTest();
+    ServoTest servo = new ServoTest();
 
     double throttle, spin, speed, speed1, angle, shootSpeed;
 
@@ -32,5 +33,6 @@ public class GamepadPractice extends OpMode {
         drive.drive(throttle, spin);
         drive.shoot(shootSpeed);
         drive.intake(1);
+        servo.setServoPos(angle);
     }
 }
