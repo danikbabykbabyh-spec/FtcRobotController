@@ -33,7 +33,7 @@ public class GlovTeleOp extends OpMode {
 
         drive.drive(throttle, spin);
         drive.shoot(shootSpeed);
-        drive.intake(1);
+        drive.intake(-1);
         if (speed > 0) {
             drive.sideDrive(speed);
         }
