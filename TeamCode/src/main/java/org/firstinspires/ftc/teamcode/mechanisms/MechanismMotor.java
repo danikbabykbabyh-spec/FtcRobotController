@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class MechanismMotor {
-    private DcMotor frontRightMotor, backRightMotor, frontLeftMotor, backLeftMotor, shootMotor, intakeMotor, shootMotor2;
+    private DcMotor frontRightMotor, backRightMotor, frontLeftMotor, backLeftMotor, shootMotor, intakeMotor, intakeMotor2;
     public void init(HardwareMap hwMap) {
         frontRightMotor = hwMap.get(DcMotor.class, "motorR");
         frontRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -18,8 +18,8 @@ public class MechanismMotor {
         shootMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         intakeMotor = hwMap.get(DcMotor.class, "motorIntake");
         intakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        shootMotor2 = hwMap.get(DcMotor.class, "motorShoot2");
-        shootMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        intakeMotor2 = hwMap.get(DcMotor.class, "motorIntake2");
+        intakeMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         frontRightMotor.setDirection(DcMotor.Direction.REVERSE);
         frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
@@ -42,27 +42,12 @@ public class MechanismMotor {
         backLeftMotor.setPower(leftPower);
     }
 
-    public void sideDrive(double speed) {
-        if (speed > 0) {
-            frontRightMotor.setPower(-speed);
-            backRightMotor.setPower(-speed);
-            frontLeftMotor.setPower(speed);
-            backLeftMotor.setPower(speed);
-        }
-        else if (speed < 0) {
-            frontLeftMotor.setPower(-speed);
-            backLeftMotor.setPower(-speed);
-            frontRightMotor.setPower(speed);
-            backRightMotor.setPower(speed);
-        }
-    }
-
     public void shoot(double speed) {
         shootMotor.setPower(speed);
-        shootMotor2.setPower(-speed);
     }
 
     public void intake(double speed) {
         intakeMotor.setPower(speed);
+        intakeMotor2.setPower(speed);
     }
 }
