@@ -11,4 +11,9 @@ public class MechanismServo {
         servoPos = hwMap.get(Servo.class, "servoPos");
         servoPos2 = hwMap.get(Servo.class, "servoPos2");
     }
+
+    public void servo() {
+        servoPos.setPosition(1.0);
+        servoPos2.setPosition(1.0);
+    }
 }
