@@ -10,11 +10,5 @@ public class MechanismServo {
     public void init(HardwareMap hwMap) {
         servoPos = hwMap.get(Servo.class, "servoPos");
         servoPos2 = hwMap.get(Servo.class, "servoPos2");
-        servoPos.setDirection(Servo.Direction.REVERSE);
-    }
-
-    public void setServoPos(double angle) {
-        servoPos.setPosition(angle / 2);
-        servoPos2.setPosition(angle / 2);
     }
 }

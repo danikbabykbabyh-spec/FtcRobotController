@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -16,6 +17,15 @@ public class Auto extends LinearOpMode {
     private static final String MOTOR_LB = "motorBL";
     private static final String MOTOR_RB = "motorBR";
     private static final String IMU_NAME  = "imu";
+    private static final String SHOOT = "motorShoot";
+    private static final String INTAKE = "motorIntake";
+    private static final String INTAKE2 = "motorIntake2";
+
+
+
+
+
+
     private static final double TICKS_PER_REV = 6000;
     private static final double WHEEL_RADIUS_IN = 2.95;
     private static final double GEAR_RATIO = 5;
@@ -25,20 +35,41 @@ public class Auto extends LinearOpMode {
     private static final double KP_HEADING = 0.02; // насколько агрессивно крутимся
     private static final double MAX_POWER = 0.4;
 
-    // Допуски остановки
     private static final double POS_TOL_IN = 1.0;      // 1 дюйм
     private static final double HEADING_TOL_RAD = Math.toRadians(3); // 3 градуса
 
-
     private final Pose[] targets = new Pose[] {
-            new Pose(24,  0,   0),
-            new Pose(0, 0,  180),
-            new Pose( 24, 0, 0),
-            new Pose( 0,  0,   180),
+
+            new Pose(-32.98, -37.77, 0.62),
+
+            new Pose(-16.70, -37.59, 90.00),
+
+        new Pose(-16.70,  24.71, 140.53),
+
+        new Pose(-25.63,  32.06, 270.22),
+
+        new Pose(-25.28, -59.32, 183.00),
+
+        new Pose(-55.38, -60.90, 45.44),
+
+            new Pose(-32.98, -37.77, 0.62),
+
+            new Pose(-16.70, -37.59, 90.00),
+
+            new Pose(-16.70,  24.71, 140.53),
+
+            new Pose(-25.63,  32.06, 270.22),
+
+            new Pose(-25.28, -59.32, 183.00),
+
+            new Pose(-55.38, -60.90, 45.44),
+
     };
 
     // ====== Hardware ======
-    private DcMotorEx lf, rf, lb, rb;
+    private DcMotorEx lf, rf, lb, rb, motorS, motorI, motorI2;
+
+    private Servo servoPos, servoPos2;
     private IMU imu;
 
     // ====== Состояние одометрии ======
@@ -52,15 +83,21 @@ public class Auto extends LinearOpMode {
         rf = hardwareMap.get(DcMotorEx.class, MOTOR_RF);
         lb = hardwareMap.get(DcMotorEx.class, MOTOR_LB);
         rb = hardwareMap.get(DcMotorEx.class, MOTOR_RB);
+        motorS = hardwareMap.get(DcMotorEx.class, SHOOT);
+        motorI = hardwareMap.get(DcMotorEx.class, INTAKE);
+        motorI2 = hardwareMap.get(DcMotorEx.class, INTAKE2);
+        servoPos = hardwareMap.get(Servo.class, "servoPos");
+        servoPos2 = hardwareMap.get(Servo.class, "servoPos2");
+
+        servoPos.setDirection(Servo.Direction.REVERSE);
+
+        motorS.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
         imu = hardwareMap.get(IMU.class, IMU_NAME);
 
-        // Важно: направления моторов могут отличаться. Обычно RF и RB нужно REVERSE.
-        // Настрой под себя:
         rf.setDirection(DcMotorEx.Direction.REVERSE);
         rb.setDirection(DcMotorEx.Direction.REVERSE);
 
-        // Энкодеры
         lf.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         rf.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         lb.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
@@ -74,7 +111,6 @@ public class Auto extends LinearOpMode {
         // Сброс IMU yaw (в новых SDK это важно)
         imu.resetYaw();
 
-        // Инициализируем последние значения энкодеров
         lastLf = lf.getCurrentPosition();
         lastRf = rf.getCurrentPosition();
         lastLb = lb.getCurrentPosition();
@@ -86,13 +122,41 @@ public class Auto extends LinearOpMode {
         waitForStart();
         if (isStopRequested()) return;
 
-        // --- проезжаем по точкам ---
-        for (Pose t : targets) {
-            goToPose(t.x, t.y, Math.toRadians(t.headingDeg), 6.0); // таймаут 6 сек на точку
+        for (int i = 0; i < targets.length; i++) {
+            Pose t = targets[i];
+
+            goToPose(t.x, t.y, Math.toRadians(t.headingDeg), 7.0);
+
+            // ===== ПОСЛЕ ТРЕТЬЕЙ ТОЧКИ =====
+            if (i == 2) {
+                stopDrive();
+                runMotorShoot(1.0, 2.0);
+            }
+
             if (isStopRequested()) break;
         }
+        for (int y = 0; y < targets.length; y++) {
+            Pose t = targets[y];
 
-        stopDrive();
+            goToPose(t.x, t.y, Math.toRadians(t.headingDeg), 5.0);
+
+
+            if (y == 5) {
+                stopDrive();
+                sleep((4000));
+            }
+
+            if (isStopRequested()) break;
+        }
+    }
+    private void runMotorShoot(double power, double seconds) {
+        motorS.setPower(power);
+        motorI.setPower(power);
+        motorI2.setPower(power);
+        sleep((long)(seconds * 1000));
+        motorS.setPower(0);
+        motorI.setPower(0);
+        motorI2.setPower(0);
     }
 
     /**
@@ -212,10 +276,12 @@ public class Auto extends LinearOpMode {
     }
 
     private double ticksToInches(int ticks) {
-        return WHEEL_RADIUS_IN * 2.0 * Math.PI * GEAR_RATIO * (ticks / TICKS_PER_REV);
+        double revolutions = ticks / TICKS_PER_REV;
+        double wheelDistance = 2.0 * Math.PI * WHEEL_RADIUS_IN * revolutions;
+        return wheelDistance / GEAR_RATIO;
     }
 
-    private void setDrivePower(double pLF, double pRF, double pLB, double pRB) {
+        private void setDrivePower(double pLF, double pRF, double pLB, double pRB) {
         lf.setPower(pLF);
         rf.setPower(pRF);
         lb.setPower(pLB);
