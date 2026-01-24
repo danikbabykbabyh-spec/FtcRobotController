@@ -12,7 +12,7 @@ public class GlovTeleOp extends OpMode {
     MechanismMotor drive = new MechanismMotor();
     MechanismServo servo = new MechanismServo();
 
-    double throttle, spin, shootSpeed, intakeSpeed;
+    double throttle, spin, shootSpeed, intakeSpeed, pushSpeed;
 
     @Override
     public void init()
@@ -25,12 +25,14 @@ public class GlovTeleOp extends OpMode {
     @Override
     public void loop() {
         throttle = gamepad1.right_stick_x;
-        spin = -gamepad1.left_stick_y;
-        shootSpeed = gamepad2.right_stick_y;
+        spin = -gamepad1.left_stick_y;        shootSpeed = -gamepad2.right_trigger;
         intakeSpeed = gamepad2.left_stick_y;
+        pushSpeed = gamepad2.left_trigger;
+
 
         drive.drive(throttle, spin);
         drive.shoot(shootSpeed);
         drive.intake(intakeSpeed);
+        drive.push(pushSpeed);
     }
 }
